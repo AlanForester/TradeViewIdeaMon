@@ -1,0 +1,38 @@
+version: "3.7"
+services:
+  database:
+    image: postgres
+    restart: always
+    ports:
+      - 5432:5432
+    env_file:
+      - .env
+    networks:
+      - app-net
+  web:
+    build: ./www
+    command: bash -c "rm -f tmp/pids/server.pid && bundle exec rails s -p 3000 -b '0.0.0.0'"
+    volumes:
+      - ./www:/www
+    ports:
+      - "3000:3000"
+    depends_on:
+      - database
+    networks:
+      - app-net
+  app:
+    image: golang:1.14.2-alpine
+    volumes:
+      - .:/go/src/app
+    working_dir: /go/src/app
+    command: go run main.go
+    depends_on:
+      - database
+    links:
+      - database
+    networks:
+      - app-net
+
+networks:
+  app-net:
+    driver: bridge

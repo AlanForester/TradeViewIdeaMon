@@ -1,0 +1,7 @@
+/data
+.idea
+.DS_STORE
+.env
+/images/*
+
+!.gitkeep
