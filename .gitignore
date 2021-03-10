@@ -3,5 +3,5 @@
 .DS_STORE
 .env
 /images/*
-
+/vendor
 !.gitkeep
