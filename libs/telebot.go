@@ -31,7 +31,7 @@ func (t *Telebot) Sender(ch chan sql.Post) {
 			panic(err)
 		}
 		tm := time.Unix(int64(i), 0)
-		NotifyTextMsg := fmt.Sprintf(NotifyText, tm.Format("Y-m-d"), post.Pair, post.Tp, post.Author, post.Title, post.Descr)
+		NotifyTextMsg := fmt.Sprintf(NotifyText, tm.Format("2006-01-02"), post.Pair, post.Tp, post.Author, post.Title, post.Descr)
 		var users []sql.User
 		sql.DB.Find(&users)
 		for _, user := range users {

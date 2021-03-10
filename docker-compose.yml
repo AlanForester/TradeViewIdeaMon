@@ -20,18 +20,6 @@ services:
       - database
     networks:
       - app-net
-  app:
-    image: golang:1.14.2-alpine
-    volumes:
-      - .:/go/src/app
-    working_dir: /go/src/app
-    command: go run main.go
-    depends_on:
-      - database
-    links:
-      - database
-    networks:
-      - app-net
 
 networks:
   app-net:
