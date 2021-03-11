@@ -10,12 +10,13 @@ import (
 )
 
 const NotifyText = `
-*Дата:* %s
-*Символ:* %s
-*Направление:* %s
-*Заголовок:* %s
-*Автор:* %s
-Описание:
+<b>Дата:</b> %s
+<b>Символ:</b> %s
+<b>Направление:</b> %s
+<b>Заголовок:</b> %s
+<b>Автор:</b> %s
+<b>Описание:</b>
+
 %s
 `
 
@@ -34,8 +35,8 @@ func (t *Telebot) Sender(ch chan sql.Post) {
 		var users []sql.User
 		sql.DB.Find(&users)
 		for _, user := range users {
-			mess := &tb.Photo{File: tb.FromDisk(post.Image), Caption: NotifyTextMsg}
-			_, _ = t.Connect.Send(user, mess, &tb.SendOptions{ParseMode: tb.ModeMarkdownV2})
+			mess := &tb.Photo{File: tb.FromDisk(post.Image), Caption: NotifyTextMsg, ParseMode: tb.ModeHTML}
+			_, _ = t.Connect.Send(user, mess, tb.ModeHTML)
 		}
 	}
 }
@@ -64,7 +65,7 @@ func (t *Telebot) Start() {
 			if db.Error != nil {
 				log.Printf("Error on user save: %v", db.Error)
 			}
-			_, _ = t.Connect.Send(user, "Вы успешно подписались", tb.SendOptions{ParseMode: tb.ModeMarkdownV2})
+			_, _ = t.Connect.Send(user, "Вы успешно подписались")
 		}
 	})
 
