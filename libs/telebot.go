@@ -64,7 +64,7 @@ func (t *Telebot) Start() {
 			if db.Error != nil {
 				log.Printf("Error on user save: %v", db.Error)
 			}
-			_, _ = t.Connect.Send(user, "Вы успешно подписались")
+			_, _ = t.Connect.Send(user, "Вы успешно подписались", tb.SendOptions{ParseMode: tb.ModeMarkdownV2})
 		}
 	})
 
