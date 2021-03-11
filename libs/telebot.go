@@ -13,7 +13,7 @@ const NotifyText = `
 <b>Дата:</b> %s
 <b>Символ:</b> %s
 <b>Направление:/b> %s
-<b>Заголовок:</b>
+<b>Заголовок:</b> %s
 <b>Автор:</b> %s
 Описание:
 %s
@@ -30,7 +30,7 @@ func (t *Telebot) Sender(ch chan sql.Post) {
 			panic(err)
 		}
 		tm := time.Unix(int64(i), 0)
-		NotifyTextMsg := fmt.Sprintf(NotifyText, tm.Format("2006-01-02"), post.Pair, post.Tp, post.Author, post.Title, post.Descr)
+		NotifyTextMsg := fmt.Sprintf(NotifyText, tm.Format("2006-01-02"), post.Pair, post.Tp, post.Title, post.Author, post.Descr)
 		var users []sql.User
 		sql.DB.Find(&users)
 		for _, user := range users {
