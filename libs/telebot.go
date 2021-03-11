@@ -35,7 +35,7 @@ func (t *Telebot) Sender(ch chan sql.Post) {
 		sql.DB.Find(&users)
 		for _, user := range users {
 			mess := &tb.Photo{File: tb.FromDisk(post.Image), Caption: NotifyTextMsg}
-			_, _ = t.Connect.Send(user, mess)
+			_, _ = t.Connect.Send(user, mess, , tb.SendOptions{ParseMode: tb.ModeMarkdownV2})
 		}
 	}
 }
