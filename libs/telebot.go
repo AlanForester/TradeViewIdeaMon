@@ -10,11 +10,11 @@ import (
 )
 
 const NotifyText = `
-<b>Дата:</b> %s
-<b>Символ:</b> %s
-<b>Направление:/b> %s
-<b>Заголовок:</b> %s
-<b>Автор:</b> %s
+*Дата:* %s
+*Символ:* %s
+*Направление:* %s
+*Заголовок:* %s
+*Автор:* %s
 Описание:
 %s
 `
@@ -64,7 +64,7 @@ func (t *Telebot) Start() {
 			if db.Error != nil {
 				log.Printf("Error on user save: %v", db.Error)
 			}
-			_, _ = t.Connect.Send(user, "Вы успешно подписались", tb.SendOptions{ParseMode: tb.ModeHTML})
+			_, _ = t.Connect.Send(user, "Вы успешно подписались")
 		}
 	})
 
