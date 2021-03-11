@@ -56,8 +56,7 @@ func (t *Telebot) Sender(ch chan sql.Post) {
 func (t *Telebot) Start() {
 	var err error
 	t.Connect, err = tb.NewBot(tb.Settings{
-		//		Token:  "1669602029:AAH20CYggKwpCbncssBSJ6gdvQn5HjfNOJA",
-		Token:  "1656961529:AAH9dKZXphT75tK0ulfqkSdO15dJBpfsOJQ",
+		Token:  "1669602029:AAH20CYggKwpCbncssBSJ6gdvQn5HjfNOJA",
 		Poller: &tb.LongPoller{Timeout: 10 * time.Second},
 	})
 
