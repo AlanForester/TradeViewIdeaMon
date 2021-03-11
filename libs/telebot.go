@@ -34,9 +34,21 @@ func (t *Telebot) Sender(ch chan sql.Post) {
 		NotifyTextMsg := fmt.Sprintf(NotifyText, tm.Format("2006-01-02"), post.Pair, post.Tp, post.Title, post.Author, post.Descr)
 		var users []sql.User
 		sql.DB.Find(&users)
+		var rmupc *tb.ReplyMarkup
 		for _, user := range users {
-			mess := &tb.Photo{File: tb.FromDisk(post.Image), Caption: NotifyTextMsg, ParseMode: tb.ModeHTML}
-			_, _ = t.Connect.Send(user, mess, tb.ModeHTML)
+			text := NotifyTextMsg
+
+			rmupc = &tb.ReplyMarkup{}
+			more := rmupc.URL("Читать полностью", post.Url)
+			rmupc.Inline(rmupc.Row(more))
+			//pOptions := tb.SendOptions{ReplyMarkup: rmupc}
+
+			if len(post.Descr) > 200 {
+				text = fmt.Sprintf("%s...", post.Descr[0:200])
+			}
+
+			mess := &tb.Photo{File: tb.FromDisk(post.Image), Caption: text, ParseMode: tb.ModeHTML}
+			_, _ = t.Connect.Send(user, mess, rmupc, tb.ModeHTML)
 		}
 	}
 }
@@ -44,7 +56,8 @@ func (t *Telebot) Sender(ch chan sql.Post) {
 func (t *Telebot) Start() {
 	var err error
 	t.Connect, err = tb.NewBot(tb.Settings{
-		Token:  "1669602029:AAH20CYggKwpCbncssBSJ6gdvQn5HjfNOJA",
+		//		Token:  "1669602029:AAH20CYggKwpCbncssBSJ6gdvQn5HjfNOJA",
+		Token:  "1656961529:AAH9dKZXphT75tK0ulfqkSdO15dJBpfsOJQ",
 		Poller: &tb.LongPoller{Timeout: 10 * time.Second},
 	})
 
