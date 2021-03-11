@@ -32,8 +32,10 @@ func main() {
 		for range tick.C {
 			scraper := libs.Scraper{}
 			log.Printf("Tick ")
-			results := scraper.GetLastIdeas(newPostCh)
-
+			results := scraper.GetLastIdeas(newPostCh,"https://www.tradingview.com/markets/cryptocurrencies/ideas/")
+			scraper2 := libs.Scraper{}
+			results2 := scraper2.GetLastIdeas(newPostCh,"https://ru.tradingview.com/markets/cryptocurrencies/ideas/")
+			results = append(results,results2...)
 			for _, post := range results {
 				db := sql.DB.First(&post)
 				if db.RowsAffected == 0 {

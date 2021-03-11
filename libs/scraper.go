@@ -12,7 +12,7 @@ type Scraper struct {
 	Wg    sync.WaitGroup
 }
 
-func (m *Scraper) GetLastIdeas(newPost chan sql2.Post) []sql2.Post {
+func (m *Scraper) GetLastIdeas(newPost chan sql2.Post, link string) []sql2.Post {
 	var res []sql2.Post
 	c := colly.NewCollector()
 
@@ -66,7 +66,7 @@ func (m *Scraper) GetLastIdeas(newPost chan sql2.Post) []sql2.Post {
 		fmt.Println("Visiting", r.URL)
 	})
 
-	c.Visit("https://www.tradingview.com/ideas")
+	c.Visit(link)
 	m.Wg.Wait()
 
 	return res
