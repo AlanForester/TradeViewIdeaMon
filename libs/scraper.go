@@ -4,6 +4,12 @@ import (
 	"fmt"
 	sql2 "github.com/AlexCollin/TradeViewIdeaMon/sql"
 	"github.com/gocolly/colly/v2"
+	"io"
+	"log"
+	"net/http"
+	"net/url"
+	"os"
+	"path"
 	"sync"
 )
 
@@ -42,9 +48,22 @@ func (m *Scraper) GetLastIdeas(newPost chan sql2.Post, link string) []sql2.Post 
 				data.Pair = e.ChildText("a.tv-chart-view__symbol-link.tv-chart-view__symbol--desc")
 				data.Date, _ = e.DOM.Find(".tv-chart-view__title-time").Attr("data-timestamp")
 				data.Descr = e.ChildText(".tv-chart-view__description")
-				path, err := Screenshot(curUrl, "")
-				if err == nil {
-					data.Image = path
+				vid := e.ChildAttr("video.tv-chart-view__video", "src")
+				log.Printf("Video %v", vid)
+				if vid != "" {
+					fn, err := m.DownloadFile(vid)
+					if err != nil {
+						log.Printf("Error on download video: %v", err)
+					} else {
+						data.Video = fn
+					}
+				} else {
+					path, err := Screenshot(curUrl, "")
+					if err != nil {
+						log.Printf("Error on download image: %v", err)
+					} else {
+						data.Video = path
+					}
 				}
 				res = append(res, data)
 				sql2.DB.Save(&data)
@@ -70,4 +89,28 @@ func (m *Scraper) GetLastIdeas(newPost chan sql2.Post, link string) []sql2.Post 
 	m.Wg.Wait()
 
 	return res
+}
+
+func (m *Scraper) DownloadFile(fileUrl string) (string, error) {
+
+	parsedUrl, _ := url.Parse(fileUrl)
+
+	// Get the data
+	resp, err := http.Get(fileUrl)
+	if err != nil {
+		return "", err
+	}
+	defer resp.Body.Close()
+
+	// Create the file
+	outPath := fmt.Sprintf("./video/%s", path.Base(parsedUrl.Path))
+	out, err := os.Create(outPath)
+	if err != nil {
+		return "", err
+	}
+	defer out.Close()
+
+	// Write the body to file
+	_, err = io.Copy(out, resp.Body)
+	return outPath, err
 }

@@ -52,8 +52,16 @@ func (t *Telebot) Sender(ch chan sql.Post) {
 				text = fmt.Sprintf("%s...", post.Descr[0:200])
 			}
 
-			mess := &tb.Photo{File: tb.FromDisk(post.Image), Caption: text, ParseMode: tb.ModeHTML}
-			_, _ = t.Connect.Send(user, mess, rmupc, tb.ModeHTML)
+			var mess tb.Sendable
+			if post.Video != "" {
+				mess = &tb.Video{File: tb.FromDisk(post.Video), Caption: text}
+			} else {
+				mess = &tb.Photo{File: tb.FromDisk(post.Image), Caption: text, ParseMode: tb.ModeHTML}
+			}
+			_, err = t.Connect.Send(user, mess, rmupc, tb.ModeHTML)
+			if err != nil {
+				log.Printf("Error on send: %v", err)
+			}
 		}
 	}
 }
@@ -61,7 +69,8 @@ func (t *Telebot) Sender(ch chan sql.Post) {
 func (t *Telebot) Start() {
 	var err error
 	t.Connect, err = tb.NewBot(tb.Settings{
-		Token:  "1669602029:AAH20CYggKwpCbncssBSJ6gdvQn5HjfNOJA",
+		//Token:  "1669602029:AAH20CYggKwpCbncssBSJ6gdvQn5HjfNOJA",
+		Token:  "1656961529:AAH9dKZXphT75tK0ulfqkSdO15dJBpfsOJQ",
 		Poller: &tb.LongPoller{Timeout: 10 * time.Second},
 	})
 

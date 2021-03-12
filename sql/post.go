@@ -10,6 +10,7 @@ type Post struct {
 	Pair   string
 	Date   string
 	Image  string
+	Video  string
 	Descr  string
 	Url    string `gorm:"uniqueIndex"`
 }
