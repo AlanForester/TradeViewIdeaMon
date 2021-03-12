@@ -5,6 +5,7 @@ import (
 	"github.com/AlexCollin/TradeViewIdeaMon/sql"
 	tb "gopkg.in/tucnak/telebot.v2"
 	"log"
+	"net/url"
 	"strconv"
 	"time"
 )
@@ -38,7 +39,12 @@ func (t *Telebot) Sender(ch chan sql.Post) {
 			text := NotifyTextMsg
 
 			rmupc = &tb.ReplyMarkup{}
-			more := rmupc.URL("Читать полностью", post.Url)
+			path, err := url.Parse(post.Url)
+			if err != nil {
+				log.Printf("Url parse error: %v", err)
+			}
+
+			more := rmupc.URL("Читать полностью", fmt.Sprintf("https://trview-bot.com%s", path.Path))
 			rmupc.Inline(rmupc.Row(more))
 			//pOptions := tb.SendOptions{ReplyMarkup: rmupc}
 
